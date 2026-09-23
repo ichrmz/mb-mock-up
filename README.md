@@ -1,1 +1,0 @@
-# mb-mock-up
