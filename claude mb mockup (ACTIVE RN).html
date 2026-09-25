@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CollectorsHub - Motherbase Company Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --line:#e3e5ea; --field:#f1f2f5;
+  --ink:#16171c; --dim:#6b7280; --faint:#9aa1ae;
+  --red:#d1352c; --blue:#2b5fcf; --green:#1f9d5c; --amber:#c9861f;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;}
+html{height:100%; scroll-padding-top:env(safe-area-inset-top,0px);}
+body{margin:0; min-height:100%; background:var(--bg); color:var(--ink); font-family:'Inter',system-ui,sans-serif;}
+h1,h2,h3{font-family:'Inter',sans-serif; font-weight:700; margin:0;}
+.hidden{display:none !important;}
+a{color:inherit;}
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-thumb{background:#d6d8de; border-radius:4px;}
+
+/* ============ AUTH SCREEN ============ */
+#screen-auth .wrap{display:flex; min-height:100vh;}
+.hero{position:relative; flex:1.05; min-width:0; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:48px 32px;
+  background:radial-gradient(ellipse at 18% 25%, rgba(209,53,44,.08), transparent 55%), radial-gradient(ellipse at 82% 75%, rgba(43,95,207,.08), transparent 55%), var(--bg);
+  border-right:1px solid var(--line); overflow:hidden;}
+.hero-inner{position:relative; z-index:2; text-align:center; max-width:420px;}
+.logo-img{width:min(60%,230px); display:block; margin:0 auto 26px; border-radius:10px; box-shadow:0 20px 50px rgba(20,20,30,.16); border:1px solid var(--line);}
+.hero h1{letter-spacing:.02em; font-size:clamp(21px,3vw,28px); line-height:1.2; margin-bottom:10px;}
+.hero p{color:var(--dim); font-size:15px; line-height:1.6; margin:0;}
+.rule{width:64px; height:2px; margin:20px auto; border-radius:1px; background:linear-gradient(90deg,var(--red),var(--blue));}
+.auth-panel{flex:1; min-width:0; display:flex; align-items:center; justify-content:center; padding:40px 28px; background:var(--panel);}
+.card{width:100%; max-width:380px;}
+.tabs{display:flex; border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-bottom:30px;}
+.tab{flex:1; text-align:center; padding:13px 0; cursor:pointer; font-weight:600; font-size:14px; letter-spacing:.02em; color:var(--dim); background:var(--field); border:none;}
+.tab.active{color:var(--ink); background:var(--panel); box-shadow:inset 0 -2px 0 var(--red);}
+h2.form-title{font-size:22px; margin-bottom:6px; letter-spacing:.01em;}
+.sub{color:var(--dim); font-size:13.5px; margin:0 0 24px; line-height:1.5;}
+.field{margin-bottom:15px;}
+label{display:block; font-size:12px; color:var(--dim); margin-bottom:6px; font-weight:500;}
+input,select,textarea{width:100%; padding:11px 13px; background:var(--field); border:1px solid var(--line); color:var(--ink); font-size:14px; font-family:'Inter',sans-serif; border-radius:4px;}
+input::placeholder{color:var(--faint);}
+input:focus,select:focus,textarea:focus{border-color:var(--blue); background:#fff; outline:none;}
+.row2{display:flex; gap:12px;} .row2 .field{flex:1;}
+.btn{padding:12px 22px; cursor:pointer; font-weight:600; font-size:14px; letter-spacing:.01em; color:#fff; border:none; border-radius:4px; background:linear-gradient(90deg,var(--red),var(--blue));}
+.btn.block{width:100%; margin-top:4px;}
+.btn:hover{filter:brightness(1.06);}
+.meta-row{display:flex; justify-content:space-between; align-items:center; margin:14px 0 22px; font-size:13px;}
+.meta-row label{display:flex; align-items:center; gap:7px; color:var(--dim); font-size:13px; margin:0; font-weight:400;}
+.meta-row a{color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line);}
+.switch-line{text-align:center; font-size:13px; color:var(--dim); margin-top:22px;}
+.switch-line button{background:none; border:none; color:var(--blue); cursor:pointer; font-size:13px; font-family:'Inter',sans-serif; font-weight:600; padding:0;}
+form{display:none;} form.active{display:block;}
+@media (max-width:820px){ .hero{border-right:none; border-bottom:1px solid var(--line); padding:32px 24px;} .logo-img{width:44%; max-width:160px; margin-bottom:14px;} .hero p{display:none;} }
+
+/* ============ PORTAL SHELL ============ */
+#screen-portal{display:flex; min-height:100vh;}
+.sidebar{width:240px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+.sb-brand{display:flex; align-items:center; gap:10px; padding:18px 18px; border-bottom:1px solid var(--line);}
+.sb-brand img{width:28px; height:28px; object-fit:cover; border-radius:5px; border:1px solid var(--line);}
+.sb-brand span{font-weight:700; font-size:14.5px; letter-spacing:.02em;}
+.sb-nav{flex:1; padding:12px 10px; overflow-y:auto;}
+.sb-item{padding:11px 13px; margin-bottom:2px; border-radius:5px; cursor:pointer; color:var(--dim); font-size:13.5px; font-weight:500; border-left:2px solid transparent;}
+.sb-item:hover{background:var(--field); color:var(--ink);}
+.sb-item.active{background:var(--field); color:var(--ink); border-left:2px solid var(--red); font-weight:600;}
+.sb-foot{padding:14px 18px; border-top:1px solid var(--line); font-size:12px; color:var(--faint);}
+.sb-foot b{color:var(--dim); display:block; font-size:13px; margin-bottom:2px; font-weight:600;}
+.sb-foot a{color:var(--dim); border-bottom:1px solid var(--line); cursor:pointer;}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 28px; border-bottom:1px solid var(--line); background:var(--panel); position:sticky; top:0; z-index:5;}
+.topbar h1{font-size:18px; letter-spacing:.01em;}
+.topbar .crumb{color:var(--dim); font-size:12px; margin-top:2px; font-weight:500;}
+.top-user{display:flex; align-items:center; gap:10px;}
+.avatar{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--red),var(--blue)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; color:#fff;}
+.content{padding:24px 28px 60px; overflow-y:auto;}
+.view{display:none;} .view.active{display:block;}
+
+.subtabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:22px; flex-wrap:wrap;}
+.subtab{padding:9px 15px; cursor:pointer; font-weight:600; font-size:13px; letter-spacing:.01em; color:var(--dim); border-bottom:2px solid transparent;}
+.subtab.active{color:var(--ink); border-bottom:2px solid var(--red);}
+.subview{display:none;} .subview.active{display:block;}
+
+.grid{display:grid; gap:14px;}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:1000px){ .grid.cols-3,.grid.cols-4{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:640px){ .grid.cols-3,.grid.cols-4{grid-template-columns:1fr;} }
+
+.stat-card{background:var(--panel); border:1px solid var(--line); padding:17px; border-radius:6px;}
+.stat-card .n{font-weight:700; font-size:25px;}
+.stat-card .l{color:var(--dim); font-size:12px; margin-top:4px;}
+.stat-card .d{font-size:11.5px; margin-top:8px; font-weight:600;}
+.d.up{color:var(--green);} .d.down{color:var(--red);}
+
+.panel-box{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:20px; margin-bottom:18px;}
+.panel-box h3{font-size:15px; letter-spacing:.01em;}
+.panel-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; gap:10px; flex-wrap:wrap;}
+.panel-head p{color:var(--dim); font-size:12px; margin:4px 0 0;}
+
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{text-align:left; color:var(--dim); font-weight:600; font-size:11px; letter-spacing:.03em; padding:9px 10px; border-bottom:1px solid var(--line);}
+td{padding:11px 10px; border-bottom:1px solid #eef0f3; vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.mono{color:var(--dim); font-size:12px;}
+
+.badge{display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600;}
+.badge.active{background:rgba(31,157,92,.12); color:var(--green);}
+.badge.archived{background:rgba(107,114,128,.12); color:var(--dim);}
+.badge.draft{background:rgba(107,114,128,.12); color:var(--dim);}
+.badge.sent{background:rgba(43,95,207,.12); color:var(--blue);}
+.badge.received{background:rgba(31,157,92,.12); color:var(--green);}
+.badge.published{background:rgba(31,157,92,.12); color:var(--green);}
+.badge.needsreview{background:rgba(209,53,44,.12); color:var(--red);}
+.badge.scheduled{background:rgba(43,95,207,.12); color:var(--blue);}
+.badge.posted{background:rgba(31,157,92,.12); color:var(--green);}
+
+.btn-sm{padding:7px 13px; font-size:12px; border-radius:4px; border:1px solid var(--line); background:var(--panel); color:var(--ink); cursor:pointer; font-weight:600;}
+.btn-sm:hover{border-color:var(--blue);}
+.btn-sm.primary{background:linear-gradient(90deg,var(--red),var(--blue)); border:none; color:#fff;}
+.btn-sm.ghost{background:transparent;}
+
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:12px; font-size:12.5px;}
+.bar-row .lbl{width:160px; flex-shrink:0; color:var(--dim);}
+.bar-track{flex:1; height:8px; background:var(--field); border-radius:5px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:5px; background:linear-gradient(90deg,var(--red),var(--blue));}
+.bar-val{width:70px; text-align:right; flex-shrink:0; font-size:12px; color:var(--ink); font-weight:600;}
+
+.toggle{position:relative; width:38px; height:21px; background:var(--field); border:1px solid var(--line); border-radius:20px; cursor:pointer; flex-shrink:0;}
+.toggle .dot{position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%; background:var(--faint); transition:.15s;}
+.toggle.on{background:rgba(31,157,92,.15); border-color:var(--green);}
+.toggle.on .dot{left:19px; background:var(--green);}
+.autorow{display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid #eef0f3; gap:14px;}
+.autorow:last-child{border-bottom:none;}
+.autorow .t{font-size:13px; font-weight:600;} .autorow .s{font-size:12px; color:var(--dim); margin-top:2px;}
+
+.msg-item{display:flex; gap:12px; padding:13px 0; border-bottom:1px solid #eef0f3; align-items:flex-start;}
+.msg-item:last-child{border-bottom:none;}
+.msg-tag{width:38px; height:24px; border-radius:4px; background:var(--field); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:10px; font-weight:700; color:var(--dim); margin-top:2px;}
+.msg-item .who{font-weight:600; font-size:13px;} .msg-item .prev{color:var(--dim); font-size:12px; margin-top:3px;}
+.msg-item .meta{margin-left:auto; text-align:right; flex-shrink:0; font-size:11px; color:var(--faint);}
+
+.extract-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+@media (max-width:800px){.extract-grid{grid-template-columns:1fr;}}
+.raw-box{background:var(--field); border:1px dashed var(--line); border-radius:5px; padding:14px; font-size:12.5px; color:var(--dim); line-height:1.7; white-space:pre-wrap;}
+.field-out{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eef0f3; font-size:13px;}
+.field-out .k{color:var(--dim);} .field-out .v{font-weight:600;}
+
+.flag-item{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid #eef0f3;}
+.flag-item:last-child{border-bottom:none;}
+.flag-item .mk{width:20px; height:20px; border-radius:4px; background:rgba(201,134,31,.15); color:var(--amber); font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;}
+.flag-item .t{font-weight:600; font-size:13px;} .flag-item .d2{font-size:12px; color:var(--dim); margin-top:2px;}
+
+.lineage{font-size:13px;}
+.lin-l1{font-weight:700; font-size:15px; margin-bottom:8px;}
+.lin-l2{padding-left:18px; border-left:1px solid var(--line); margin-left:6px; margin-bottom:10px;}
+.lin-l2 .h{font-weight:600; margin-bottom:8px;}
+.lin-l3{padding:6px 11px; background:var(--field); border:1px solid var(--line); border-radius:4px; margin-bottom:6px; display:inline-block; margin-right:8px; font-size:12px;}
+.lin-add{display:flex; gap:8px; margin-top:6px; max-width:320px;}
+
+.plat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+@media (max-width:700px){.plat-grid{grid-template-columns:1fr;}}
+.plat-card{border:1px solid var(--line); border-radius:6px; padding:14px; background:var(--field);}
+.plat-card .ph{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+.plat-card .pname{font-weight:700; font-size:13.5px;}
+.plat-card .ptxt{font-size:12.5px; color:var(--dim); line-height:1.6; margin-bottom:10px;}
+
+.feat-card{display:flex; gap:16px; align-items:center; background:var(--field); border:1px solid var(--line); border-radius:6px; padding:16px;}
+.feat-thumb{width:64px; height:64px; border-radius:6px; background:linear-gradient(135deg, rgba(209,53,44,.18), rgba(43,95,207,.18)); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:var(--dim);}
+.pill-select{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+.pill{padding:6px 13px; border:1px solid var(--line); border-radius:20px; font-size:12px; cursor:pointer; color:var(--dim); background:var(--panel);}
+.pill.sel{border-color:var(--blue); color:var(--ink); background:rgba(43,95,207,.08); font-weight:600;}
+
+.alert-card{border:1px solid #f0d3d1; background:#fbf1f0; border-radius:6px; padding:13px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;}
+.alert-card .nm{font-weight:600; font-size:13px;}
+.alert-card .counts{display:flex; gap:16px; font-size:12px; color:var(--dim); align-items:center; flex-wrap:wrap;}
+.alert-card .counts b{color:var(--ink); font-weight:700;}
+
+.qr-block{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+.qr-img{width:66px; height:66px; background:var(--ink); color:#fff; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; text-align:center; padding:4px; font-weight:700; flex-shrink:0;}
+
+.inline-form{background:var(--field); border:1px solid var(--line); border-radius:6px; padding:16px; margin-bottom:16px;}
+.inline-form .grid{grid-template-columns:repeat(3,1fr); margin-bottom:14px;}
+@media (max-width:700px){.inline-form .grid{grid-template-columns:1fr 1fr;}}
+.inline-form .field{margin-bottom:0;}
+.inline-form-actions{display:flex; gap:10px;}
+.empty-note{color:var(--dim); font-size:13px; padding:10px 0;}
+</style>
+</head>
+<body>
+
+<section id="screen-auth">
+  <div class="wrap">    
+    <section class="auth-panel">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" id="tab-login" onclick="showAuth('login')">LOG IN</button>
+          <button class="tab" id="tab-register" onclick="showAuth('register')">REGISTER</button>
+        </div>
+        <form id="login" class="active" onsubmit="enterPortal(event)">
+          <h2 class="form-title">Welcome back</h2>
+          <p class="sub">Log in to your Motherbase staff account.</p>
+          <div class="field"><label>Email or username</label><input type="text" placeholder="admin@motherbase.com"></div>
+          <div class="field"><label>Password</label><input type="password" placeholder="••••••••"></div>
+          <div class="meta-row">
+            <label><input type="checkbox" style="width:auto;padding:0;"> Remember me</label>
+            <a href="#">Forgot password?</a>
+          </div>
+          <button class="btn block" type="submit">Log In</button>
+          <p class="switch-line">New Administrator? <button type="button" onclick="showAuth('register')">Register</button></p>
+        </form>
+        <form id="register" onsubmit="enterPortal(event)">
+          <h2 class="form-title">Create an account</h2>          
+          <div class="field"><label>Full name</label><input type="text" placeholder="Juan Dela Cruz" ></div>
+          <div class="row2">
+            <div class="field"><label>Username</label><input type="text" placeholder="juandc" ></div>
+            <div class="field"><label>Email</label><input type="email" placeholder="you@example.com" ></div>
+          </div>
+          <div class="field"><label>Password</label><input type="password" placeholder="At least 8 characters" ></div>
+          <div class="field"><label>Confirm password</label><input type="password" placeholder="Re-enter password" ></div>
+          <button class="btn block" type="submit">Create Account</button>
+          <p class="switch-line">Already have an account? <button type="button" onclick="showAuth('login')">Log in</button></p>
+        </form>
+      </div>
+    </section>
+  </div>
+</section>
+
+<section id="screen-portal" class="hidden">
+  <aside class="sidebar">
+    <div class="sb-brand"></div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-foot"><b>Admin</b>Administrator · <a onclick="backToAuth(event)">Log out</a></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div><h1 id="tb-title">Dashboard</h1></div>
+      <div class="top-user"><div class="avatar">P</div></div>
+    </div>
+    <div class="content">
+      <div class="view active" id="view-dashboard"></div>
+      <div class="view" id="view-inventory"></div>
+      <div class="view" id="view-supplier"></div>
+      <div class="view" id="view-cms"></div>
+      <div class="view" id="view-analytics"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ================= AUTH ================= */
+function showAuth(which){
+  document.getElementById('login').classList.toggle('active', which==='login');
+  document.getElementById('register').classList.toggle('active', which==='register');
+  document.getElementById('tab-login').classList.toggle('active', which==='login');
+  document.getElementById('tab-register').classList.toggle('active', which==='register');
+}
+function enterPortal(e){
+  e.preventDefault();
+  document.getElementById('screen-auth').classList.add('hidden');
+  document.getElementById('screen-portal').classList.remove('hidden');
+}
+function backToAuth(e){
+  e.preventDefault();
+  document.getElementById('screen-portal').classList.add('hidden');
+  document.getElementById('screen-auth').classList.remove('hidden');
+}
+
+/* ================= IN-MEMORY DATA (resets on reload) ================= */
+let demandAlerts=[
+ {item:'Hot Toys Spider-Man No Way Home Deluxe', lookingFor:12, wishlist:5, stock:0},
+ {item:'Sideshow Optimus Prime 1', lookingFor:18, wishlist:9, stock:0},
+ {item:'Pokemon 151 Booster Box', lookingFor:31, wishlist:14, stock:0},
+ {item:'Banpresto Luffy Gear 5 Ichiban Kuji', lookingFor:9, wishlist:3, stock:0},
+];
+let inventoryMatrix=[
+ {name:'S.H.Figuarts Iron Man Mark 46', sku:'MB-2409-0113', cat:'Marvel', qty:3, price:4500, status:'active'},
+ {name:'Hot Toys Spider-Man No Way Home', sku:'MB-2409-0114', cat:'Marvel', qty:0, price:18500, status:'archived'},
+ {name:'Bandai RX-78-2 Gundam PG 1/60', sku:'MB-2408-0092', cat:'Gundam', qty:5, price:12800, status:'active'},
+ {name:'Banpresto Luffy Gear 5', sku:'MB-2409-0201', cat:'One Piece', qty:2, price:2200, status:'active'},
+ {name:'Sideshow Optimus Prime 1', sku:'MB-2407-0044', cat:'Transformers', qty:0, price:185000, status:'archived'},
+ {name:'Pokemon 151 Booster Box', sku:'MB-2409-0210', cat:'TCG', qty:0, price:6800, status:'archived'},
+];
+let acquisitions=[
+ {date:'2026-09-18', product:'RX-78-2 Gundam PG 1/60', supplier:'Ichiban Toys Japan', qty:10, cost:9800},
+ {date:'2026-08-02', product:'RX-78-2 Gundam PG 1/60', supplier:'Ichiban Toys Japan', qty:6, cost:9200},
+ {date:'2026-09-20', product:'Luffy Gear 5 Ichiban Kuji', supplier:'Banpresto China Direct', qty:15, cost:1450},
+ {date:'2026-07-11', product:'Iron Man Mark 46', supplier:'Bandai Direct HK', qty:8, cost:3600},
+];
+let poList=[
+ {po:'PO-1042', supplier:'Hot Toys Distribution HK', items:4, total:74000, status:'sent'},
+ {po:'PO-1041', supplier:'Ichiban Toys Japan', items:12, total:112000, status:'received'},
+ {po:'PO-1040', supplier:'Banpresto China Direct', items:20, total:29000, status:'draft'},
+ {po:'PO-1039', supplier:'Bandai Direct HK', items:6, total:41000, status:'received'},
+];
+let inbox=[
+ {who:'Ichiban Toys Japan', tag:'XLS', prev:'New arrivals list for October - 14 SKUs, prices attached.', when:'Sep 22'},
+ {who:'Hot Toys Distribution HK', tag:'PDF', prev:'Spider-Man No Way Home restock photos + spec sheet.', when:'Sep 21'},
+ {who:'Banpresto China Direct', tag:'PDF', prev:'Q4 catalog - One Piece line, 40+ SKUs.', when:'Sep 19'},
+ {who:'Sideshow Collectibles', tag:'MSG', prev:'Optimus Prime 1:1 Bust - restock ETA and pricing update.', when:'Sep 17'},
+];
+const extractExamples=[
+ {raw:'new purchase order items - bandai rx78 pg 1/60 gundam, 10 pcs, 9800 each, eta oct 3, japan direct, ichiban toys - also 1/144 versions if you want 3200 each moq 12', product:'RX-78-2 Gundam PG 1/60', mfr:'Bandai', scale:'1/60', supplier:'Ichiban Toys Japan', qty:10, price:9800, eta:'Oct 3, 2026', cat:'Gundam'},
+ {raw:'restock spiderman nwh deluxe figure, 6 units incoming, hk warehouse, sell price around 18500 base on last batch', product:'Hot Toys Spider-Man No Way Home', mfr:'Hot Toys', scale:'1/6', supplier:'Hot Toys Distribution HK', qty:6, price:18500, eta:'Sep 30, 2026', cat:'Marvel'},
+ {raw:'one piece ichiban kuji luffy gear 5 full set available, 20 sets, 1450 per set, china warehouse ready to ship', product:'Luffy Gear 5 Ichiban Kuji', mfr:'Banpresto', scale:'-', supplier:'Banpresto China Direct', qty:20, price:1450, eta:'Sep 28, 2026', cat:'One Piece'},
+ {raw:'optimus prime 1:1 bust limited restock confirmed, 2 units only, price update to 185000, includes signed cert', product:'Optimus Prime 1:1 Bust', mfr:'Sideshow', scale:'1:1', supplier:'Sideshow Collectibles', qty:2, price:185000, eta:'Oct 10, 2026', cat:'Transformers'},
+];
+let itemDetails=[
+ {name:'S.H.Figuarts Iron Man Mark 46', pct:92, status:'published'},
+ {name:'Bandai RX-78-2 Gundam PG 1/60', pct:100, status:'published'},
+ {name:'Banpresto Luffy Gear 5', pct:58, status:'draft'},
+ {name:'Sideshow Optimus Prime 1:1 Bust', pct:40, status:'needsreview'},
+];
+let verifyFlags=[
+ {t:'Banpresto Luffy Gear 5', d:'Missing release date and scale information.'},
+ {t:'Sideshow Optimus Prime 1:1 Bust', d:'Character background text conflicts with manufacturer spec sheet.'},
+ {t:'Pokemon 151 Booster Box', d:'No authenticity / verification notes on file.'},
+];
+let socialPosts=[
+ {platform:'Facebook', status:'scheduled', text:'NEW ARRIVAL: RX-78-2 Gundam PG 1/60 is back in stock. Limited units, P12,800. Message us to reserve yours.'},
+ {platform:'TikTok', status:'draft', text:'Unboxing the PG 1/60 RX-78-2 - tell us which Gundam we should feature next. #gunpla #motherbase'},
+ {platform:'Instagram', status:'draft', text:'Perfect Grade RX-78-2, restocked. Swipe for detail shots - link in bio to reserve.'},
+ {platform:'Shopee', status:'posted', text:'Bandai PG 1/60 RX-78-2 Gundam - Authentic, Japan direct import. P12,800. Ships within 2 days.'},
+];
+let ironManMarks=['Mark III','Mark IV','Mark VI','Mark VII','Mark 46'];
+let spiderManSuits=['Classic Suit','Integrated Suit','No Way Home'];
+const featuredOptions=[
+ {name:'Iron Man Mark 46', blurb:'Our most-requested Marvel release this quarter.'},
+ {name:'RX-78-2 Gundam PG 1/60', blurb:'Best-selling Gundam release of the month.'},
+ {name:'Luffy Gear 5', blurb:'Fresh off the shelf - highest demand in One Piece line.'},
+ {name:'Optimus Prime 1:1 Bust', blurb:'Our rarest 1:1 licensed statue in stock.'},
+];
+const lookingForLog=[{n:'Gundam RX-78',v:25},{n:'Iron Man Mark 46',v:18},{n:'Optimus Prime 1:1',v:12},{n:'Luffy Gear 5',v:9}];
+const trending=[{n:'Gundam', a:120},{n:'Marvel', a:95},{n:'One Piece', a:88},{n:'Transformers', a:40}];
+const mostViewed=[{n:'Gundam RX-78',v:340},{n:'Optimus Prime',v:280},{n:'Spider-Man',v:215},{n:'Luffy Gear 5',v:170}];
+const catDist=[{n:'Anime Figures',v:42},{n:'Model Kits',v:28},{n:'Statues',v:18},{n:'Transformers',v:12}];
+const dailySales=[{n:'Mon',v:18500},{n:'Tue',v:22300},{n:'Wed',v:15800},{n:'Thu',v:26100},{n:'Fri',v:31200},{n:'Sat',v:48900},{n:'Sun',v:41700}];
+const monthlySales=[{n:'Jul',v:510000},{n:'Aug',v:465000},{n:'Sep',v:490000}];
+const bestSelling=[{n:'Gundam RX-78',v:35},{n:'Spider-Man Figure',v:28},{n:'Optimus Prime',v:21},{n:'Luffy Gear 5',v:19}];
+const bestSellingCat=[{n:'Anime Figures',v:42},{n:'Model Kits',v:31},{n:'Transformers',v:17},{n:'Statues',v:10}];
+const revenueByProduct=[{n:'Gundam',v:85000},{n:'Marvel',v:62000},{n:'Transformers',v:45000},{n:'One Piece',v:38000}];
+const salesByLive=[{n:'Live 1 - Sep 12',v:35000},{n:'Live 2 - Sep 15',v:52000},{n:'Live 3 - Sep 19',v:41000}];
+
+/* ================= UI STATE (resets on reload) ================= */
+let state={
+  activeSub:{inventory:'matrix', supplier:'inbox', cms:'wiki', analytics:'client'},
+  showAddStock:false, showAddAcq:false, showAddPO:false, showAddEntry:false,
+  barcodeItem:0, extractIndex:0, extractApproved:false, aiDraftApproved:false, featuredIndex:0,
+};
+
+/* ================= HELPERS ================= */
+function money(n){return 'P'+n.toLocaleString();}
+function today(){return new Date().toISOString().slice(0,10);}
+function barList(data, unit){
+  const max = Math.max(...data.map(d=>d.v));
+  return data.map(d=>`<div class="bar-row"><div class="lbl">${d.n}</div><div class="bar-track"><div class="bar-fill" style="width:${(d.v/max*100).toFixed(0)}%"></div></div><div class="bar-val">${unit==='P'?money(d.v):d.v+(unit||'')}</div></div>`).join('');
+}
+function statusBadge(s){ const map={active:'Active',archived:'Archived',draft:'Draft',sent:'Sent',received:'Received',published:'Published',needsreview:'Needs Review',scheduled:'Scheduled',posted:'Posted'}; return `<span class="badge ${s}">${map[s]||s}</span>`; }
+function opts(list){ return list.map(x=>`<option value="${x}">${x}</option>`).join(''); }
+
+/* ================= NAV ================= */
+const NAV = [
+  {id:'dashboard', label:'Dashboard', crumb:'Central Headquarters'},
+  {id:'inventory', label:'Inventory & Sourcing', crumb:'Smart catalog, barcodes, purchase orders'},
+  {id:'supplier', label:'Suppliers', crumb:'Inbox & AI extraction'},
+  {id:'cms', label:'Content Management', crumb:'Item details & social posting'},
+  {id:'analytics', label:'Analytics', crumb:'Client & sales analytics'},
+];
+const sbNav = document.getElementById('sb-nav');
+NAV.forEach(n=>{
+  const d=document.createElement('div');
+  d.className='sb-item'+(n.id==='dashboard'?' active':'');
+  d.id='sb-'+n.id;
+  d.textContent=n.label;
+  d.onclick=()=>gotoView(n.id);
+  sbNav.appendChild(d);
+});
+function gotoView(id){
+  NAV.forEach(n=>document.getElementById('sb-'+n.id).classList.toggle('active', n.id===id));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  const n = NAV.find(x=>x.id===id);
+  document.getElementById('tb-title').textContent = n.label;
+  document.getElementById('tb-crumb').textContent = n.crumb;
+  window.scrollTo(0,0);
+}
+const RENDERERS = {};
+function switchSub(view, id){ state.activeSub[view]=id; RENDERERS[view](); }
+
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  document.getElementById('view-dashboard').innerHTML = `
+  <div class="grid cols-4" style="margin-bottom:20px;">
+    <div class="stat-card"><div class="n">P48.9K</div><div class="l">Today's sales (Sat)</div><div class="d up">Up 15% vs last Sat</div></div>
+    <div class="stat-card"><div class="n">1,842</div><div class="l">Active catalog items</div><div class="d up">Up 38 this week</div></div>
+    <div class="stat-card"><div class="n">${demandAlerts.length}</div><div class="l">Items at zero stock with demand</div><div class="d down">Needs restock</div></div>
+    <div class="stat-card"><div class="n">6</div><div class="l">Pending purchase order deliveries</div><div class="d">2 overdue</div></div>
+  </div>
+  <div class="panel-box">
+    <div class="panel-head"><div><h3>Looking For Demand Widget</h3></div><button class="btn-sm" onclick="state.activeSub.inventory='matrix'; RENDERERS.inventory(); gotoView('inventory');">View all in inventory</button></div>
+    ${demandAlerts.length ? demandAlerts.map((a,i)=>`
+      <div class="alert-card">
+        <div class="nm">${a.item}</div>
+        <div class="counts"><span><b>${a.lookingFor}</b> Looking For</span><span><b>${a.wishlist}</b> Wishlists</span><span><b>${a.stock}</b> Stock</span><button class="btn-sm primary" onclick="restockAlert(${i})">Restock</button></div>
+      </div>`).join('') : `<div class="empty-note">No outstanding demand alerts - all caught up.</div>`}
+  </div>
+  <div class="grid cols-3">
+    <div class="panel-box"><h3 style="margin-bottom:14px;">Today's live-selling</h3><p class="sub" style="margin-bottom:14px;">Live 4 starts 5:00 PM - Base 1</p>${barList(salesByLive,'P')}</div>
+    <div class="panel-box"><h3 style="margin-bottom:14px;">Trending franchises</h3>${barList(trending.map(t=>({n:t.n,v:t.a})))}</div>
+    <div class="panel-box"><h3 style="margin-bottom:14px;">Supplier inbox</h3>${inbox.slice(0,3).map(m=>`<div class="msg-item"><div class="msg-tag">${m.tag}</div><div><div class="who">${m.who}</div><div class="prev">${m.prev}</div></div><div class="meta">${m.when}</div></div>`).join('')}</div>
+  </div>`;
+}
+function restockAlert(i){ demandAlerts.splice(i,1); renderDashboard(); }
+RENDERERS.dashboard = renderDashboard;
+
+/* ================= INVENTORY & SOURCING ================= */
+function renderInventory(){
+  const s = state.activeSub.inventory;
+  const bItem = inventoryMatrix[state.barcodeItem] || inventoryMatrix[0];
+  document.getElementById('view-inventory').innerHTML = `
+  <div class="subtabs">
+    <div class="subtab ${s==='matrix'?'active':''}" onclick="switchSub('inventory','matrix')">Smart Inventory</div>
+    <div class="subtab ${s==='barcode'?'active':''}" onclick="switchSub('inventory','barcode')">Barcode Generator</div>
+    <div class="subtab ${s==='automation'?'active':''}" onclick="switchSub('inventory','automation')">Status Automation</div>
+    <div class="subtab ${s==='acquisitions'?'active':''}" onclick="switchSub('inventory','acquisitions')">Acquisition Log</div>
+    <div class="subtab ${s==='po'?'active':''}" onclick="switchSub('inventory','po')">Purchase Orders</div>
+  </div>
+
+  <div class="subview ${s==='matrix'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Item List</h3></div><button class="btn-sm primary" onclick="state.showAddStock=!state.showAddStock; renderInventory();">${state.showAddStock?'Cancel':'+ Add stock unit'}</button></div>
+      ${state.showAddStock?`
+      <div class="inline-form">
+        <div class="grid">
+          <div class="field"><label>Item name</label><input id="new-name" placeholder="e.g. Nendoroid Luffy"></div>
+          <div class="field"><label>Category</label><input id="new-cat" placeholder="e.g. One Piece"></div>
+          <div class="field"><label>Quantity</label><input id="new-qty" type="number" min="0" value="1"></div>
+          <div class="field"><label>Price (PHP)</label><input id="new-price" type="number" min="0" value="1000"></div>
+          <div class="field"><label>Status</label><select id="new-status"><option value="active">Active</option><option value="archived">Archived</option></select></div>
+        </div>
+        <div class="inline-form-actions"><button class="btn-sm primary" onclick="saveStockUnit()">Save item</button><button class="btn-sm" onclick="state.showAddStock=false; renderInventory();">Cancel</button></div>
+      </div>`:''}
+      <table><thead><tr><th>Item</th><th>SKU</th><th>Category</th><th>Qty</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody>
+      ${inventoryMatrix.map((i,idx)=>`<tr><td>${i.name}</td><td class="mono">${i.sku}</td><td>${i.cat}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${statusBadge(i.status)}</td><td><button class="btn-sm" onclick="generateBarcode(${idx})">Generate barcode</button></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="subview ${s==='barcode'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Barcode Generator</h3></div></div>
+      <div class="qr-block">
+        <div class="qr-img">||I|II|I|<br>CODE</div>
+        <div>
+          <div style="font-weight:600;">${bItem.name}</div>
+          <div class="mono" style="margin:4px 0;">${state.lastBarcode || bItem.sku}</div>
+          <div style="color:var(--dim); font-size:12.5px;">Category: ${bItem.cat} · Price: ${money(bItem.price)} · Generated: ${today()}</div>
+          <button class="btn-sm primary" style="margin-top:10px;" onclick="state.barcodePrinted=true; renderInventory();" ${state.barcodePrinted?'disabled':''}>${state.barcodePrinted?'Label sent to printer':'Print label'}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subview ${s==='automation'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Status Automation Settings</h3></div></div>
+      <div class="autorow"><div><div class="t">Auto-archive at 0 stock</div><div class="s">Item is hidden from the collector-facing catalog once available stock hits zero.</div></div><div class="toggle ${state.autoArchive!==false?'on':''}" onclick="state.autoArchive = state.autoArchive===false; renderInventory();"><div class="dot"></div></div></div>
+      <div class="autorow"><div><div class="t">Auto-reactivate on restock</div><div class="s">Item automatically returns to Active once a new acquisition record raises stock above zero.</div></div><div class="toggle ${state.autoReactivate!==false?'on':''}" onclick="state.autoReactivate = state.autoReactivate===false; renderInventory();"><div class="dot"></div></div></div>
+      <div class="autorow"><div><div class="t">Duplicate on different supplier</div><div class="s">Creates a separate SKU entry when restocked from a different supplier at a different cost.</div></div><div class="toggle ${state.autoDup?'on':''}" onclick="state.autoDup=!state.autoDup; renderInventory();"><div class="dot"></div></div></div>
+      <div class="autorow"><div><div class="t">Auto-notify demand list on restock</div><div class="s">Collectors who marked the item Looking For get notified once it is active again.</div></div><div class="toggle ${state.autoNotify!==false?'on':''}" onclick="state.autoNotify = state.autoNotify===false; renderInventory();"><div class="dot"></div></div></div>
+    </div>
+  </div>
+
+  <div class="subview ${s==='acquisitions'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Acquisition Log</h3></div><button class="btn-sm primary" onclick="state.showAddAcq=!state.showAddAcq; renderInventory();">${state.showAddAcq?'Cancel':'+ Log acquisition'}</button></div>
+      ${state.showAddAcq?`
+      <div class="inline-form">
+        <div class="grid">
+          <div class="field"><label>Product</label><select id="acq-product">${opts(inventoryMatrix.map(i=>i.name))}</select></div>
+          <div class="field"><label>Supplier</label><input id="acq-supplier" placeholder="Supplier name"></div>
+          <div class="field"><label>Quantity</label><input id="acq-qty" type="number" min="1" value="5"></div>
+          <div class="field"><label>Unit cost (PHP)</label><input id="acq-cost" type="number" min="0" value="1000"></div>
+        </div>
+        <div class="inline-form-actions"><button class="btn-sm primary" onclick="saveAcquisition()">Save acquisition</button><button class="btn-sm" onclick="state.showAddAcq=false; renderInventory();">Cancel</button></div>
+      </div>`:''}
+      <table><thead><tr><th>Date</th><th>Product</th><th>Supplier</th><th>Qty</th><th>Unit cost</th></tr></thead><tbody>
+      ${acquisitions.length? acquisitions.map(a=>`<tr><td>${a.date}</td><td>${a.product}</td><td>${a.supplier}</td><td>${a.qty}</td><td>${money(a.cost)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty-note">No acquisitions logged yet.</td></tr>'}
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="subview ${s==='po'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Purchase Order Manager</h3></div><button class="btn-sm primary" onclick="state.showAddPO=!state.showAddPO; renderInventory();">${state.showAddPO?'Cancel':'+ New PO'}</button></div>
+      ${state.showAddPO?`
+      <div class="inline-form">
+        <div class="grid">
+          <div class="field"><label>Supplier</label><input id="po-supplier" placeholder="Supplier name"></div>
+          <div class="field"><label>Item count</label><input id="po-items" type="number" min="1" value="5"></div>
+          <div class="field"><label>Total (PHP)</label><input id="po-total" type="number" min="0" value="20000"></div>
+        </div>
+        <div class="inline-form-actions"><button class="btn-sm primary" onclick="savePO()">Save PO</button><button class="btn-sm" onclick="state.showAddPO=false; renderInventory();">Cancel</button></div>
+      </div>`:''}
+      <table><thead><tr><th>PO #</th><th>Supplier</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+      ${poList.map((p,idx)=>`<tr><td class="mono">${p.po}</td><td>${p.supplier}</td><td>${p.items}</td><td>${money(p.total)}</td><td>${statusBadge(p.status)}</td><td>${p.status!=='received'?`<button class="btn-sm" onclick="advancePO(${idx})">Advance status</button>`:''}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
+function saveStockUnit(){
+  const name=document.getElementById('new-name').value.trim();
+  if(!name) return;
+  const cat=document.getElementById('new-cat').value.trim()||'General';
+  const qty=parseInt(document.getElementById('new-qty').value)||0;
+  const price=parseInt(document.getElementById('new-price').value)||0;
+  const status=document.getElementById('new-status').value;
+  const sku='MB-'+today().replace(/-/g,'').slice(2)+'-'+String(inventoryMatrix.length+100).padStart(4,'0');
+  inventoryMatrix.unshift({name,sku,cat,qty,price,status});
+  state.showAddStock=false;
+  renderInventory();
+}
+function generateBarcode(idx){
+  state.barcodeItem=idx;
+  state.lastBarcode = inventoryMatrix[idx].sku+'-'+String(Math.floor(Math.random()*90+10));
+  state.activeSub.inventory='barcode';
+  renderInventory();
+}
+function saveAcquisition(){
+  const product=document.getElementById('acq-product').value;
+  const supplier=document.getElementById('acq-supplier').value.trim()||'Unspecified supplier';
+  const qty=parseInt(document.getElementById('acq-qty').value)||0;
+  const cost=parseInt(document.getElementById('acq-cost').value)||0;
+  acquisitions.unshift({date:today(), product, supplier, qty, cost});
+  const item = inventoryMatrix.find(i=>i.name===product);
+  if(item){ item.qty += qty; if(state.autoReactivate!==false && item.status==='archived') item.status='active'; }
+  state.showAddAcq=false;
+  renderInventory();
+}
+function savePO(){
+  const supplier=document.getElementById('po-supplier').value.trim()||'Unspecified supplier';
+  const items=parseInt(document.getElementById('po-items').value)||0;
+  const total=parseInt(document.getElementById('po-total').value)||0;
+  const num='PO-'+(1042+poList.length+1);
+  poList.unshift({po:num, supplier, items, total, status:'draft'});
+  state.showAddPO=false;
+  renderInventory();
+}
+function advancePO(idx){
+  const order=['draft','sent','received'];
+  const cur=order.indexOf(poList[idx].status);
+  poList[idx].status = order[Math.min(cur+1,2)];
+  renderInventory();
+}
+RENDERERS.inventory = renderInventory;
+
+/* ================= SUPPLIERS ================= */
+function renderSupplier(){
+  const s = state.activeSub.supplier;
+  const ex = extractExamples[state.extractIndex];
+  document.getElementById('view-supplier').innerHTML = `
+  <div class="subtabs">
+    <div class="subtab ${s==='inbox'?'active':''}" onclick="switchSub('supplier','inbox')">Workspace Inbox</div>
+    <div class="subtab ${s==='extract'?'active':''}" onclick="switchSub('supplier','extract')">AI Information Extractor</div>
+  </div>
+  <div class="subview ${s==='inbox'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Workspace Inbox</h3></div></div>
+      ${inbox.map((m,i)=>`<div class="msg-item"><div class="msg-tag">${m.tag}</div><div><div class="who">${m.who}</div><div class="prev">${m.prev}</div></div><div class="meta">${m.when}<br><button class="btn-sm" style="margin-top:6px;" onclick="runExtract(${i%extractExamples.length})">Run AI extract</button></div></div>`).join('')}
+    </div>
+  </div>
+  <div class="subview ${s==='extract'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>AI Information Extractor</h3></div></div>
+      <div class="extract-grid">
+        <div>
+          <label>Raw supplier message</label>
+          <div class="raw-box">"${ex.raw}"</div>
+        </div>
+        <div>
+          <label>Extracted fields (draft)</label>
+          <div class="field-out"><span class="k">Product</span><span class="v">${ex.product}</span></div>
+          <div class="field-out"><span class="k">Manufacturer</span><span class="v">${ex.mfr}</span></div>
+          <div class="field-out"><span class="k">Scale</span><span class="v">${ex.scale}</span></div>
+          <div class="field-out"><span class="k">Supplier</span><span class="v">${ex.supplier}</span></div>
+          <div class="field-out"><span class="k">Qty / Unit cost</span><span class="v">${ex.qty} pcs - ${money(ex.price)}</span></div>
+          <div class="field-out"><span class="k">ETA</span><span class="v">${ex.eta}</span></div>
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <button class="btn-sm primary" ${state.extractApproved?'disabled':''} onclick="approveExtract()">${state.extractApproved?'Added to inventory':'Approve & add to inventory'}</button>
+            <button class="btn-sm" onclick="renderSupplier()">Edit fields</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function runExtract(i){ state.extractIndex=i; state.extractApproved=false; state.activeSub.supplier='extract'; renderSupplier(); }
+function approveExtract(){
+  const ex = extractExamples[state.extractIndex];
+  inventoryMatrix.unshift({name:ex.product, sku:'MB-NEW-'+Math.floor(Math.random()*900+100), cat:ex.cat, qty:ex.qty, price:ex.price, status:'active'});
+  state.extractApproved=true;
+  renderSupplier();
+}
+RENDERERS.supplier = renderSupplier;
+
+/* ================= CMS ================= */
+function renderCMS(){
+  const s = state.activeSub.cms;
+  const feat = featuredOptions[state.featuredIndex];
+  document.getElementById('view-cms').innerHTML = `
+  <div class="subtabs">
+    <div class="subtab ${s==='wiki'?'active':''}" onclick="switchSub('cms','wiki')">Item Details</div>
+    <div class="subtab ${s==='ai'?'active':''}" onclick="switchSub('cms','ai')">AI Entry Assistant</div>
+    <div class="subtab ${s==='verify'?'active':''}" onclick="switchSub('cms','verify')">AI Verification</div>
+    <div class="subtab ${s==='publisher'?'active':''}" onclick="switchSub('cms','publisher')">Social Posting</div>
+    <div class="subtab ${s==='spotlight'?'active':''}" onclick="switchSub('cms','spotlight')">Featured Spotlight</div>    
+  </div>
+
+  <div class="subview ${s==='wiki'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Item Details</h3></div><button class="btn-sm primary" onclick="state.showAddEntry=!state.showAddEntry; renderCMS();">${state.showAddEntry?'Cancel':'+ New entry'}</button></div>
+      ${state.showAddEntry?`
+      <div class="inline-form">
+        <div class="field" style="max-width:420px;"><label>Collectible name</label><input id="entry-name" placeholder="e.g. Nendoroid Luffy"></div>
+        <div class="inline-form-actions" style="margin-top:14px;"><button class="btn-sm primary" onclick="saveEntry()">Save entry</button><button class="btn-sm" onclick="state.showAddEntry=false; renderCMS();">Cancel</button></div>
+      </div>`:''}
+      <table><thead><tr><th>Collectible</th><th>Completeness</th><th>Status</th><th></th></tr></thead><tbody>
+      ${itemDetails.map((w,i)=>`<tr><td>${w.name}</td><td style="width:200px;"><div class="bar-track" style="display:inline-block;width:110px;vertical-align:middle;"><div class="bar-fill" style="width:${w.pct}%"></div></div> <span class="mono">${w.pct}%</span></td><td>${statusBadge(w.status)}</td><td><button class="btn-sm" onclick="cycleEntryStatus(${i})">Advance status</button></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="subview ${s==='ai'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>AI Entry Assistant</h3></div></div>
+      <div class="extract-grid">
+        <div>
+          <label>Staff input</label>
+          <div class="field-out"><span class="k">Product</span><span class="v">S.H.Figuarts Iron Man Mark 1</span></div>
+          <div class="field-out"><span class="k">Manufacturer</span><span class="v">Bandai</span></div>          
+          <div class="field-out"><span class="k">Franchise</span><span class="v">Marvel</span></div>
+        </div>
+        <div>
+          <label>AI-generated draft</label>
+          <div class="raw-box">Character background: Tony Stark's first armored suit, built in captivity from salvaged parts.
+Product history: Released as part of Bandai's S.H.Figuarts Marvel line, based on the MCU debut design.
+Trivia: The articulated chest reactor is a fan-favorite feature of this release.</div>
+          <div style="margin-top:10px;"><button class="btn-sm primary" ${state.aiDraftApproved?'disabled':''} onclick="state.aiDraftApproved=true; renderCMS();">${state.aiDraftApproved?'Approved':'Approve draft'}</button> <button class="btn-sm" onclick="state.aiDraftApproved=false; renderCMS();">Edit</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subview ${s==='verify'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>AI Suggestion & Verification Engine</h3></div></div>
+      ${verifyFlags.length? verifyFlags.map((f,i)=>`<div class="flag-item"><div class="mk">!</div><div><div class="t">${f.t}</div><div class="d2">${f.d}</div></div><button class="btn-sm" style="margin-left:auto;" onclick="reviewFlag(${i})">Mark reviewed</button></div>`).join(''):'<div class="empty-note">No open flags - everything checks out.</div>'}
+    </div>
+  </div>
+
+  <div class="subview ${s==='publisher'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Multi-Platform Social Posting</h3></div><span class="badge draft">RX-78-2 Gundam PG 1/60</span></div>
+      <div class="plat-grid">
+        ${socialPosts.map((p,i)=>`<div class="plat-card"><div class="ph"><span class="pname">${p.platform}</span>${statusBadge(p.status)}</div><div class="ptxt">${p.text}</div><button class="btn-sm" onclick="cyclePlatformStatus(${i})">Advance status</button></div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div class="subview ${s==='spotlight'?'active':''}">
+    <div class="panel-box">
+      <div class="panel-head"><div><h3>Featured Spotlight Editor</h3></div></div>
+      <div class="feat-card">
+        <div class="feat-thumb">${feat.name.split(' ').slice(0,2).map(w=>w[0]).join('')}</div>
+        <div><div style="font-weight:700; font-size:15px;">Motherbase Featured Collectible</div><div style="color:var(--dim); font-size:13px; margin-top:2px;">${feat.name} - "${feat.blurb}"</div></div>
+      </div>
+      <div class="pill-select">
+        ${featuredOptions.map((f,i)=>`<span class="pill ${i===state.featuredIndex?'sel':''}" onclick="state.featuredIndex=${i}; renderCMS();">${f.name}</span>`).join('')}
+      </div>
+    </div>
+  </div>
+
+
+  </div>`
+  ;
+}
+function saveEntry(){
+  const name=document.getElementById('entry-name').value.trim();
+  if(!name) return;
+  itemDetails.unshift({name, pct:0, status:'draft'});
+  state.showAddEntry=false;
+  renderCMS();
+}
+function cycleEntryStatus(i){
+  const order=['draft','needsreview','published'];
+  const cur=order.indexOf(itemDetails[i].status);
+  itemDetails[i].status=order[(cur+1)%3];
+  if(itemDetails[i].status==='published') itemDetails[i].pct=100;
+  renderCMS();
+}
+function reviewFlag(i){ verifyFlags.splice(i,1); renderCMS(); }
+function cyclePlatformStatus(i){
+  const order=['draft','scheduled','posted'];
+  const cur=order.indexOf(socialPosts[i].status);
+  socialPosts[i].status=order[(cur+1)%3];
+  renderCMS();
+}
+function addIronManMark(){
+  const val=document.getElementById('im-new').value.trim();
+  if(!val) return;
+  ironManMarks.push(val);
+  renderCMS();
+}
+RENDERERS.cms = renderCMS;
+
+/* ================= ANALYTICS ================= */
+function renderAnalytics(){
+  const s = state.activeSub.analytics;
+  document.getElementById('view-analytics').innerHTML = `
+  <div class="subtabs">
+    <div class="subtab ${s==='client'?'active':''}" onclick="switchSub('analytics','client')">Client Analytics</div>
+    <div class="subtab ${s==='sales'?'active':''}" onclick="switchSub('analytics','sales')">Sales Analytics</div>
+  </div>
+
+  <div class="subview ${s==='client'?'active':''}">
+    <div class="grid cols-3">
+      <div class="panel-box"><h3 style="margin-bottom:6px;">Looking For</h3><p class="sub">Collectors Looking For this month</p>${barList(lookingForLog,' collectors')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:6px;">Trending franchises</h3><p class="sub">Searches this month.</p>${barList(trending.map(t=>({n:t.n,v:t.a})),' searches')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:6px;">Most viewed pages</h3><p class="sub">Collectible info-page views.</p>${barList(mostViewed,' views')}</div>
+    </div>
+    <div class="panel-box"><h3 style="margin-bottom:14px;">Collector interest by category</h3>${barList(catDist,'%')}</div>
+  </div>
+
+  <div class="subview ${s==='sales'?'active':''}">
+    <div class="grid cols-4" style="margin-bottom:18px;">
+      <div class="stat-card"><div class="n">P204.5K</div><div class="l">This week's revenue</div><div class="d up">Up 9%</div></div>
+      <div class="stat-card"><div class="n">P1,395,000</div><div class="l">Q3 revenue (Jul-Sep)</div><div class="d up">Combined</div></div>
+      <div class="stat-card"><div class="n">35</div><div class="l">Top seller units - Gundam RX-78</div><div class="d">this month</div></div>
+      <div class="stat-card"><div class="n">P52K</div><div class="l">Best live session - Live B</div><div class="d up">Sep 15</div></div>
+    </div>
+    <div class="grid cols-3">
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Daily sales</h3>${barList(dailySales,'P')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Monthly sales</h3>${barList(monthlySales,'P')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Sales trend (quarter)</h3>${barList(monthlySales,'P')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Best-selling collectibles</h3>${barList(bestSelling,' units')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Best-selling category</h3>${barList(bestSellingCat,'%')}</div>
+      <div class="panel-box"><h3 style="margin-bottom:14px;">Revenue by product</h3>${barList(revenueByProduct,'P')}</div>
+    </div>
+    <div class="panel-box"><h3 style="margin-bottom:14px;">Sales by live-selling session</h3>${barList(salesByLive,'P')}</div>
+  </div>`;
+}
+RENDERERS.analytics = renderAnalytics;
+
+/* ================= INIT ================= */
+renderDashboard(); renderInventory(); renderSupplier(); renderCMS(); renderAnalytics();
+</script>
+</body>
+</html>
